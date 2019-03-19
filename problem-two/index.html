@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Fetch API Data</title>
+		<style>
+			.d-none{
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<button id="getNewsHeadlines">View Headlines</button>
+		<button id="getFilteredNews">Filter News By Author Name</button>
+		<button id="sortNews">Sort Headlines</button>
+		<div id="newsList"></div>
+		<div id="filteredData"></div>
+		<div id="sortdData"></div>
+		
+	<script>
+
+		document.getElementById('getNewsHeadlines').addEventListener('click',apiCall);
+		document.getElementById('getFilteredNews').addEventListener('click',filteredData);
+		document.getElementById('sortNews').addEventListener('click',sortedData);
+		// function for view headlines
+		function apiCall(){
+			fetch('https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=34b1b116aa924509a97de3e6ab1dda05')
+				.then((res)=> res.json())
+				.then((data) => {
+					let newsList = '<h2>Top Ten Headlines</h2>';
+						newsList +='<ol>';
+						for (i = 0; i <=9; i++) {
+							newsList += `<li> ${ data.articles[i].title }</li>`;
+						};
+						newsList +='</ol>';
+					document.getElementById('newsList').innerHTML = newsList;
+				})
+				document.getElementById("newsList").classList.remove('d-none');
+				document.getElementById("filteredData").classList.add('d-none');
+				document.getElementById("sortdData").classList.add('d-none');
+			};
+			//function for filtering
+			function filteredData(){
+				fetch('https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=34b1b116aa924509a97de3e6ab1dda05')
+				.then((res)=> res.json())
+				.then((data) => {
+					var news = data.articles;
+					//take first author name for example
+					var authorName = news[0].author;
+					var filtered = news.filter(function(item){
+					    return item.author== authorName;         
+					});
+
+					if (filtered.length > 0) {
+						let filteredData = '<h2>View filtered data for author.</h2>';
+							filtered.forEach(function(data){
+								filteredData += `<p>Author Name: ${data.author}</p>`;
+								filteredData += `<p>Author Name: ${data.title}</p>`;
+								filteredData += `<p>Description: ${data.description}</p>`;
+								filteredData += `<p>Published at: ${data.publishedAt}</p>`;
+							});
+						document.getElementById('filteredData').innerHTML = filteredData;	
+					}else{
+						let filteredData = '<h2>View filtered data for author.</h2>';
+							filteredData+= 'Nothing found against this author';
+						document.getElementById('filteredData').innerHTML = filteredData;
+					}
+				})
+				document.getElementById("newsList").classList.add('d-none');
+				document.getElementById("sortdData").classList.add('d-none');
+				document.getElementById("filteredData").classList.remove('d-none');
+			}
+			//function for sorting
+			function sortedData(){
+				fetch('https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=34b1b116aa924509a97de3e6ab1dda05')
+					.then((res)=> res.json())
+					.then((data) => {
+						var news = data.articles;
+						var sort = news.sort(function (a, b) {
+							    return a.title.localeCompare(b.title);
+							});
+						let sortdData = '<h2>Sort Headlines by starting letter (Like : a,b,c....)</h2>';
+							sortdData +='<ol>';
+							for (i = 0; i < sort.length; i++) {
+								sortdData += `<li> ${sort[i].title}</li>`;
+							};
+							sortdData +='</ol>';
+						document.getElementById('sortdData').innerHTML = sortdData;
+					})
+					document.getElementById("newsList").classList.add('d-none');
+					document.getElementById("filteredData").classList.add('d-none');
+					document.getElementById("sortdData").classList.remove('d-none');
+				};
+	</script>
+	</body>
+</html>

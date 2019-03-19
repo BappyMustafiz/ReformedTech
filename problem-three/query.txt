@@ -1,0 +1,1 @@
+SELECT campaigns.id, campaigns.name, (SELECT COUNT(*) FROM landers WHERE landers.campaign_id = campaigns.id) AS lander_count, (SELECT SUM(conversions.reveneue) FROM conversions WHERE conversions.campaign_id = campaigns.id) AS reveneue FROM campaigns WHERE campaigns.id = 1;
